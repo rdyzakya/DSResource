@@ -37,11 +37,9 @@ def solution_C1():
 
     # YOUR CODE HERE
     model = keras.Sequential([
-        keras.layers.Dense(32, activation='relu',input_shape=(1,)),
-        keras.layers.Dense(32, activation='relu'),
         keras.layers.Dense(units=1, input_shape=[1])
     ])
-    model.compile(loss='mse', optimizer='sgd', metrics=['mse'])
+    model.compile(loss='mse', optimizer=keras.optimizers.SGD(learning_rate=0.01), metrics=['mse'])
     model.fit(X, Y, epochs=1000, callbacks=[cb])
 
     print(model.predict([-2.0, 10.0]))

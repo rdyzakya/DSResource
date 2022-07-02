@@ -42,14 +42,11 @@ def solution_A1():
 
     # create FFNN Sequential
     model = keras.Sequential([
-        keras.layers.Dense(128, activation='relu', input_shape=(1,)),
-        keras.layers.Dense(128, activation='relu'),
-        keras.layers.Dense(128, activation='relu'),
-        keras.layers.Dense(1)
+        keras.layers.Dense(1, input_shape=(1,)),
     ])
 
     # compile the model with MSE loss and Adam optimizer
-    model.compile(loss='mse', optimizer='adam',metrics=['mse'])
+    model.compile(loss='mse', optimizer=tf.keras.optimizers.SGD(learning_rate=0.01),metrics=['mse'])
 
     # train the model with X and Y
     model.fit(X, Y, epochs=2000, callbacks=[cb])

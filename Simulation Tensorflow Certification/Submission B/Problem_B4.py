@@ -90,8 +90,8 @@ def solution_B4():
         tf.keras.layers.Embedding(vocab_size, embedding_dim, input_length=max_length),
         tf.keras.layers.Conv1D(32, 3, activation='relu'),
         tf.keras.layers.GlobalMaxPooling1D(),
-        tf.keras.layers.Dense(64, activation='relu'),
-        tf.keras.layers.Dense(5, activation='softmax')
+        tf.keras.layers.Dense(16, activation='relu'),
+        tf.keras.layers.Dense(6, activation='softmax')
     ])
 
     # Make sure you are using "sparse_categorical_crossentropy" as a loss fuction

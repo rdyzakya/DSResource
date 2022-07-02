@@ -21,23 +21,11 @@ from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from sklearn.model_selection import train_test_split
 
-import nltk
-from nltk.corpus import stopwords
-from nltk.stem import WordNetLemmatizer
-
-
-nltk.download('stopwords')
-nltk.download('omw-1.4')
-nltk.download('wordnet')
-
-lemma = WordNetLemmatizer()
-sw = stopwords.words('english')
-
 class Callback(tf.keras.callbacks.Callback):
   def on_epoch_end(self, epoch, logs={}):
 
-    # Check accuracy > 75%
-    if(logs.get('val_accuracy') > 0.75) and (logs.get('accuracy') > 0.75):
+    # Check accuracy > 82%
+    if(logs.get('val_accuracy') > 0.82) and (logs.get('accuracy') > 0.82):
       self.model.stop_training = True
 
 # Instantiate class
@@ -49,14 +37,6 @@ def solution_C4():
     data = json.load(open('sarcasm.json','r'))
     data = pd.DataFrame(data)
 
-    # data['headline'] = data['headline'].apply(lambda x: x.lower())
-    # # remove non alphabet and numeric char
-    # data['headline'] = data['headline'].str.replace('[^a-zA-Z0-9\s]', ' ')
-    # # remove stopwords
-    # data['headline'] = data['headline'].apply(lemma.lemmatize)
-    # # remove multispace
-    # data['headline'] = data['headline'].str.replace('\s+', ' ')
-
     # DO NOT CHANGE THIS CODE
     # Make sure you used all of these parameters or test may fail
     vocab_size = 1000
@@ -65,7 +45,7 @@ def solution_C4():
     trunc_type = 'post'
     padding_type = 'post'
     oov_tok = "<OOV>"
-    training_size = 20000/data.shape[0]
+    training_size = .8
 
     # sentences = []
     # labels = []
@@ -81,13 +61,14 @@ def solution_C4():
     testing_sequences = tokenizer.texts_to_sequences(X_test)
     testing_padded = pad_sequences(testing_sequences,maxlen=max_length)
 
+    # tf.keras.backend.clear_session()
+    # tf.random.set_seed(42)
+    # np.random.seed(42)
     model = tf.keras.Sequential([
         # YOUR CODE HERE. DO not change the last layer or test may fail
         tf.keras.layers.Embedding(vocab_size, embedding_dim, input_length=max_length),
-        # tf.keras.layers.Conv1D(64,3,activation='relu'),
-        # tf.keras.layers.MaxPooling1D(8),
-        # tf.keras.layers.Flatten(),
-        tf.keras.layers.Bidirectional(tf.keras.layers.LSTM(128)),
+        tf.keras.layers.GlobalAveragePooling1D(),
+        tf.keras.layers.Dense(24, activation='relu'),
         tf.keras.layers.Dense(1, activation='sigmoid')
     ])
 
