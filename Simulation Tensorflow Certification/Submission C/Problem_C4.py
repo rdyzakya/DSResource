@@ -68,15 +68,15 @@ def solution_C4():
         # YOUR CODE HERE. DO not change the last layer or test may fail
         tf.keras.layers.Embedding(vocab_size, embedding_dim, input_length=max_length),
         tf.keras.layers.GlobalAveragePooling1D(),
-        tf.keras.layers.Dense(24, activation='relu'),
+        tf.keras.layers.Dense(128, activation='relu'),
         tf.keras.layers.Dense(1, activation='sigmoid')
     ])
 
-    model.compile(optimizer="adam",
+    model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=0.01),
                     loss='binary_crossentropy',
                     metrics=['accuracy'])
 
-    model.fit(padded, y_train, epochs=20, validation_data=(testing_padded, y_test),verbose=1,
+    model.fit(padded, y_train, epochs=10000, validation_data=(testing_padded, y_test),verbose=1,
     callbacks=[cb])
 
     return model

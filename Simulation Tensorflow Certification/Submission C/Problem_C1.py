@@ -23,7 +23,7 @@ class Callback(tf.keras.callbacks.Callback):
   def on_epoch_end(self, epoch, logs={}):
 
     # Check accuracy
-    if(logs.get('loss') < 1e-4):
+    if(logs.get('loss') < 1e-8):
       self.model.stop_training = True
 
 # Instantiate class
@@ -40,7 +40,7 @@ def solution_C1():
         keras.layers.Dense(units=1, input_shape=[1])
     ])
     model.compile(loss='mse', optimizer=keras.optimizers.SGD(learning_rate=0.01), metrics=['mse'])
-    model.fit(X, Y, epochs=1000, callbacks=[cb])
+    model.fit(X, Y, epochs=4000, callbacks=[cb])
 
     print(model.predict([-2.0, 10.0]))
     return model

@@ -22,8 +22,8 @@ from tensorflow import keras
 class Callback(tf.keras.callbacks.Callback):
   def on_epoch_end(self, epoch, logs={}):
 
-    # Check loss < 1e-3
-    if(logs.get('loss') < 1e-3):
+    # Check loss < 1e-09
+    if(logs.get('loss') < 1e-09):
       self.model.stop_training = True
 
 # Instantiate class
@@ -46,7 +46,7 @@ def solution_B1():
     model.compile(loss='mse', optimizer=tf.keras.optimizers.SGD(learning_rate=0.01), metrics=['mse'])
 
     # train the model with X and Y
-    model.fit(X, Y, epochs=2000, callbacks=[cb])
+    model.fit(X, Y, epochs=10000, callbacks=[cb])
 
     # END YOUR CODE
 

@@ -13,7 +13,6 @@
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
-# from sklearn.preprocessing import LabelEncoder
 import numpy as np
 import tensorflow as tf
 import pandas as pd
@@ -34,8 +33,8 @@ sw = stopwords.words('english')
 class Callback(tf.keras.callbacks.Callback):
   def on_epoch_end(self, epoch, logs={}):
 
-    # Check accuracy > 91%
-    if(logs.get('val_accuracy') > 0.91) and (logs.get('accuracy') > 0.91):
+    # Check accuracy > 92%
+    if((logs.get('val_accuracy') > 0.92) and (logs.get('accuracy') > 0.92)) or logs.get('accuracy') == 1:
       self.model.stop_training = True
 
 # Instantiate class
@@ -67,7 +66,8 @@ def solution_B4():
     # YOUR CODE HERE
     # Using "shuffle=False"
     # Split the data into train and test sets (0.2 test)
-    X_train, X_test, y_train, y_test = train_test_split(bbc['text'], bbc['category'], train_size=training_portion, shuffle=False)
+    X_train, X_test, y_train, y_test = train_test_split(bbc['text'], bbc['category'],
+                                                        train_size=training_portion, shuffle=False)
 
     le = Tokenizer()
     le.fit_on_texts(y_train)
@@ -88,18 +88,18 @@ def solution_B4():
         # YOUR CODE HERE.
         # YOUR CODE HERE. DO not change the last layer or test may fail
         tf.keras.layers.Embedding(vocab_size, embedding_dim, input_length=max_length),
-        tf.keras.layers.Conv1D(32, 3, activation='relu'),
-        tf.keras.layers.GlobalMaxPooling1D(),
-        tf.keras.layers.Dense(16, activation='relu'),
+        tf.keras.layers.AveragePooling1D(32),
+        tf.keras.layers.Flatten(),
+        tf.keras.layers.Dense(512, activation='relu'),
         tf.keras.layers.Dense(6, activation='softmax')
     ])
 
     # Make sure you are using "sparse_categorical_crossentropy" as a loss fuction
-    model.compile(optimizer="adam",
+    model.compile(optimizer=tf.keras.optimizers.RMSprop(learning_rate=1e-04),
                     loss='sparse_categorical_crossentropy',
                     metrics=['accuracy'])
     # Train your model with "fit" method
-    model.fit(padded, y_train, epochs=20, validation_data=(testing_padded, y_test),verbose=2,
+    model.fit(padded, y_train, epochs=10000, validation_data=(testing_padded, y_test),verbose=2,
                 callbacks=[cb])
 
     return model
